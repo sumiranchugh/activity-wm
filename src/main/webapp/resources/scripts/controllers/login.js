@@ -1,4 +1,11 @@
-angular.module('activitiApp').controller('LoginCtrl', function ($scope, $http, UserService, Base64, $rootScope, $location,ValidateUserService) {
+angular.module('activitiApp').controller('LoginCtrl', function ($scope, $http, UserService, Base64, $rootScope, $location,ValidateUserService,LogoutService) {
+
+    if($location.path()==="/logout"){
+        LogoutService.get().$promise.then(function(){
+            $rootScope.reset();
+              $location.path('/login');
+        });
+    }
 
     if((typeof $rootScope.loggedin== 'undefined' ||$rootScope.loggedin==false) ){
         $rootScope.validateUser.then(function() {

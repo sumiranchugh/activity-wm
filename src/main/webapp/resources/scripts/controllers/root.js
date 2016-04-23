@@ -22,12 +22,13 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
         $rootScope.redirectFlag=false;
         $rootScope.redirect="";
         //    $location.path('/login');
-        return false;
+        return ;
     };
     $rootScope.validateUser =
         //  $location.path('/login');
          ValidateUserService.get(function (data, response) {
             if (typeof response()['redirect'] != 'undefined' && response()['redirect'] != "") {
+                $rootScope.reset();
                 $rootScope.redirect = response()['redirect'];
                 $rootScope.redirectFlag=true;
               //  window.location.href = $rootScope.redirect;
@@ -45,11 +46,11 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
                // return true;
             }
             else {
-              //  return $rootScope.reset();
+                return $rootScope.reset();
             }
 
         }, function () {
-           // return $rootScope.reset();
+            return $rootScope.reset();
         }).$promise;
 
 });
