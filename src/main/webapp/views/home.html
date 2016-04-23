@@ -1,0 +1,181 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="resources/styles/main.css">
+    <link rel="stylesheet" href="resources/styles/bootstrap.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'
+          rel='stylesheet' type='text/css'>
+    <!-- endbuild -->
+</head>
+<body ng-app="activitiApp" ng-controller="RootCtrl">
+
+
+<nav class="navbar navbar-default navbar-bhati navbar-static-top" role="navigation" ng-show="loggedin">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span
+                    class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <!--<a class="navbar-brand" href="http://www.jquery2dotnet.com">Brand</a>-->
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li>
+                    <img class="logo" src="img/rssbBlueLogo.jpg"/>
+                </li>
+                <li class="dropdown main-menu">
+                    <span class="zims-logo">ZIMS / </span><a href="#" class="dropdown-toggle" data-toggle="dropdown">Workflow
+                    App<span class="glyphicon glyphicon-menu-down"></span></a>
+
+                    <div class="dropdown-menu">
+                        <ul class="container">
+                            <li><a>Menu 1</a></li>
+                            <li><a>Menu 2</a></li>
+                            <li><a>Menu 2</a></li>
+                            <li><a>Menu 2</a></li>
+                            <li><a>Menu 2</a></li>
+                            <li><a>Menu 2</a></li>
+                            <li><a>Menu 2</a></li>
+                            <li><a>Menu 2</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" ng-show="loggedin">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span>
+                        {{loggedUser.firstName +' ' +loggedUser.lastName }}
+                        <span class="glyphicon glyphicon-menu-down"></span>
+                    </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>
+                        <li class="divider"></li>
+                            <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-off"></span>Logout</a>
+                            </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</nav>
+<nav class="navbar navbar-default navbar-lower" role="navigation" ng-show="loggedin">
+    <div class="container">
+        <ul class="side-menu">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                        class="glyphicon glyphicon-menu-hamburger"></span>Dashboard</a>
+
+                <div class="dropdown-menu">
+                    <ul>
+                        <li class="active"><a ng-click="changeView('dashboard')"><span
+                                class="glyphicon glyphicon-home"></span>Dashboard</a></li>
+                        <li><a ng-click="changeView('tasks')"><span class="glyphicon glyphicon-calendar"></span>My Tasks</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"><span class="glyphicon glyphicon-list-alt"></span>Administer
+                                <b class="caret"></b></a>
+                            <ul class="expand-menu">
+                                <li><a ng-click="changeView('users')">Users</a></li>
+                                <li><a ng-click="changeView('groups')">Groups</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a ng-click="changeView('processes')"><span class="glyphicon glyphicon-cog"></span>Processes</a>
+                        </li>
+                        <li>
+                            <a ng-click="changeView('instances')"><span class="glyphicon glyphicon-play-circle"></span>Instances</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div ng-view></div>
+
+
+<script src="resources/components/angular/angular.min.js"></script>
+<script src="resources/components/angular-resource/angular-resource.min.js"></script>
+<!--<script src="components/angular-ui/build/angular-ui.min.js"></script>-->
+<!--<script src="components/angular-bootstrap/ui-bootstrap.min.js"></script>-->
+<script src="resources/components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="resources/components/angular-route/angular-route.js"></script>
+
+<script src="resources/components/moment/moment.js"></script>
+<script src="resources/components/angular-moment/angular-moment.min.js"></script>
+
+<!-- build:js scripts/scripts.js -->
+<script src="resources/scripts/app.js"></script>
+<script src="resources/scripts/controllers/main.js"></script>
+
+<script src="resources/scripts/controllers/root.js"></script>
+<script src="resources/scripts/controllers/login.js"></script>
+<script src="resources/scripts/controllers/dashboard.js"></script>
+<script src="resources/scripts/controllers/task.js"></script>
+<script src="resources/scripts/controllers/users.js"></script>
+<script src="resources/scripts/controllers/groups.js"></script>
+<script src="resources/scripts/controllers/processes.js"></script>
+<script src="resources/scripts/controllers/TaskModelController.js"></script>
+<script src="resources/scripts/controllers/instances.js"></script>
+<script src="resources/scripts/controllers/doc.js"></script>
+
+
+<script src="resources/scripts/directives/pastTime.js"></script>
+<script src="resources/scripts/directives/activitiForm.js"></script>
+<script src="resources/scripts/directives/activitiTaskDefault.js"></script>
+
+
+<script src="resources/scripts/factory/Base64.js"></script>
+<script src="resources/scripts/factory/userService.js"></script>
+<script src="resources/scripts/factory/groupService.js"></script>
+<script src="resources/scripts/factory/groupUserService.js"></script>
+<script src="resources/scripts/factory/forms.js"></script>
+<script src="resources/scripts/factory/tasks.js"></script>
+<script src="resources/scripts/factory/processDefinitionService.js"></script>
+<script src="resources/scripts/factory/processInstancesService.js"></script>
+<script src="resources/scripts/factory/processInstanceService.js"></script>
+<script src="resources/scripts/factory/tasksModal.js"></script>
+<script src="resources/scripts/factory/validateUserService.js"></script>
+<script src="resources/scripts/factory/logout.js"></script>
+
+<!-- endbuild -->
+<!--<script>
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-57404860-1', 'auto');
+    ga('send', 'pageview');
+
+
+</script>-->
+
+</body>
+</html>

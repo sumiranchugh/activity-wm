@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0ev" modeler:exportDateTime="20160331142046" modeler:modelId="977650" modeler:modelVersion="1" modeler:modelLastUpdated="1459430440816">
+  <process id="PreB" name="PreB" isExecutable="true">
+    <extensionElements>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="attachment" modeler:variableType="attachment"/>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="zoneid" modeler:variableType="string"/>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="areaid" modeler:variableType="string"/>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="centerid" modeler:variableType="string"/>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="businessKey" modeler:variableType="string"/>
+    </extensionElements>
+    <startEvent id="startEvent1" activiti:initiator="initiator">
+      <extensionElements>
+        <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="true"/>
+        <activiti:formProperty id="zoneid" name="zoneid" type="string" variable="zoneid" required="true"/>
+        <activiti:formProperty id="areaid" name="areaid" type="string" variable="areaid" required="true"/>
+        <activiti:formProperty id="centerid" name="centerid" type="string" variable="centerid" required="true"/>
+        <activiti:formProperty id="businessKey" name="Business Key" type="string" variable="businessKey" required="true"/>
+      </extensionElements>
+    </startEvent>
+    <userTask id="areaapproval1" name="Area Secretary Approval">
+      <documentation>Process submitted By ${initiator} for ${businessKey} , pending for approval from Area Secretary. Please refer ${attachment} for details</documentation>
+      <extensionElements>
+        <activiti:formProperty id="areaapproval" name="Do you Approve Request ?" type="approvereject" required="true"/>
+        <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="false" writable="false"/>
+        <activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, task.eventName,0)}"/>
+        <activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
+        <modeler:allow-send-email>false</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-D4A9D776-E02B-4707-A9E9-FF4A2716A702" sourceRef="startEvent1" targetRef="areaapproval1"/>
+    <exclusiveGateway id="sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9"/>
+    <userTask id="sid-0B17B033-53A4-4E4C-BE12-52C52C49E205" name="Sewa Samiti Approval">
+      <documentation>Request submitted by ${initiator} and approved by Area Secretary. For details refer ${attachment}.</documentation>
+      <extensionElements>
+        <activiti:formProperty id="sewasamitiapproval" name="Do you Approve Request ?" type="approvereject" required="true" />
+        <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="false" writable="false"/>
+        <activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
+        <!--<activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, task.eventName,1)}"/>-->
+        <modeler:allow-send-email>false</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="sid-2CFA1710-9B02-4D3E-8B90-BB8D35875691"/>
+    <sequenceFlow id="sid-020A7FD7-27E2-4E85-AC11-A304AFC91319" sourceRef="sid-0B17B033-53A4-4E4C-BE12-52C52C49E205" targetRef="sid-2CFA1710-9B02-4D3E-8B90-BB8D35875691"/>
+    <endEvent id="sid-FF1FDEF0-CE1C-48BB-91B6-F0A5D451B981"/>
+    <sequenceFlow id="sid-15A29BCF-204E-4EE4-884F-ADFF0EC457EC" sourceRef="areaapproval1" targetRef="sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9"/>
+    <endEvent id="sid-E78E6877-2FDA-461A-82E5-EE55DA412CC6"/>
+    <sequenceFlow id="sid-DDDC11EE-A994-418D-B4CD-B1400CB019F9" sourceRef="sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9" targetRef="sid-E78E6877-2FDA-461A-82E5-EE55DA412CC6">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${areaapproval  ==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-9C24F925-8FAD-495A-903C-F4219E3321C9" sourceRef="sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9" targetRef="sid-0B17B033-53A4-4E4C-BE12-52C52C49E205">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${areaapproval  ==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-7D53B8FA-C168-4FF4-A214-8CB6DFC8B967" sourceRef="sid-2CFA1710-9B02-4D3E-8B90-BB8D35875691" targetRef="sid-E78E6877-2FDA-461A-82E5-EE55DA412CC6">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sewasamitiapproval ==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-49B97381-DDA6-422D-8FA0-E8D321CFB2BE" sourceRef="sid-2CFA1710-9B02-4D3E-8B90-BB8D35875691" targetRef="sid-FF1FDEF0-CE1C-48BB-91B6-F0A5D451B981">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sewasamitiapproval ==true}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_PreB">
+    <bpmndi:BPMNPlane bpmnElement="PreB" id="BPMNPlane_PreB">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="179.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="areaapproval1" id="BPMNShape_centerapproval1">
+        <omgdc:Bounds height="113.0" width="109.0" x="165.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9" id="BPMNShape_sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9">
+        <omgdc:Bounds height="40.0" width="40.0" x="390.0" y="174.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-0B17B033-53A4-4E4C-BE12-52C52C49E205" id="BPMNShape_sid-0B17B033-53A4-4E4C-BE12-52C52C49E205">
+        <omgdc:Bounds height="80.0" width="100.0" x="475.0" y="154.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-2CFA1710-9B02-4D3E-8B90-BB8D35875691" id="BPMNShape_sid-2CFA1710-9B02-4D3E-8B90-BB8D35875691">
+        <omgdc:Bounds height="40.0" width="40.0" x="620.0" y="174.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-FF1FDEF0-CE1C-48BB-91B6-F0A5D451B981" id="BPMNShape_sid-FF1FDEF0-CE1C-48BB-91B6-F0A5D451B981">
+        <omgdc:Bounds height="28.0" width="28.0" x="900.0" y="180.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-E78E6877-2FDA-461A-82E5-EE55DA412CC6" id="BPMNShape_sid-E78E6877-2FDA-461A-82E5-EE55DA412CC6">
+        <omgdc:Bounds height="28.0" width="28.0" x="405.0" y="31.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-D4A9D776-E02B-4707-A9E9-FF4A2716A702" id="BPMNEdge_sid-D4A9D776-E02B-4707-A9E9-FF4A2716A702">
+        <omgdi:waypoint x="129.99382264090212" y="194.0695553308832"/>
+        <omgdi:waypoint x="165.0" y="193.06459330143542"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-020A7FD7-27E2-4E85-AC11-A304AFC91319" id="BPMNEdge_sid-020A7FD7-27E2-4E85-AC11-A304AFC91319">
+        <omgdi:waypoint x="575.0" y="194.7164502164502"/>
+        <omgdi:waypoint x="620.4130434782609" y="194.91304347826087"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-7D53B8FA-C168-4FF4-A214-8CB6DFC8B967" id="BPMNEdge_sid-7D53B8FA-C168-4FF4-A214-8CB6DFC8B967">
+        <omgdi:waypoint x="628.3360655737705" y="186.1639344262295"/>
+        <omgdi:waypoint x="447.5130514604432" y="54.81136757032191"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-49B97381-DDA6-422D-8FA0-E8D321CFB2BE" id="BPMNEdge_sid-49B97381-DDA6-422D-8FA0-E8D321CFB2BE">
+        <omgdi:waypoint x="659.5347985347985" y="194.96520146520146"/>
+        <omgdi:waypoint x="900.0000233949596" y="194.525594107139"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-DDDC11EE-A994-418D-B4CD-B1400CB019F9" id="BPMNEdge_sid-DDDC11EE-A994-418D-B4CD-B1400CB019F9">
+        <omgdi:waypoint x="411.8333333333333" y="176.33333333333334"/>
+        <omgdi:waypoint x="419.3956707251874" y="70.46060984737639"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-15A29BCF-204E-4EE4-884F-ADFF0EC457EC" id="BPMNEdge_sid-15A29BCF-204E-4EE4-884F-ADFF0EC457EC">
+        <omgdi:waypoint x="274.0" y="191.5"/>
+        <omgdi:waypoint x="332.0" y="191.5"/>
+        <omgdi:waypoint x="390.74074074074076" y="193.75925925925927"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-9C24F925-8FAD-495A-903C-F4219E3321C9" id="BPMNEdge_sid-9C24F925-8FAD-495A-903C-F4219E3321C9">
+        <omgdi:waypoint x="429.5833333333333" y="194.91666666666666"/>
+        <omgdi:waypoint x="475.0" y="194.7183406113537"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
