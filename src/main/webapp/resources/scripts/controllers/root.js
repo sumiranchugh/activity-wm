@@ -7,7 +7,11 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
           //  $location.path('/login');
         });
         //  $location.path('/login');
-    }
+    };
+    $rootScope.$on('$routeChangeStart', function (event, next) {
+        $rootScope.currentRoute = next;
+    });
+
     $scope.changeView = function (view) {
         $location.path(view);
     };

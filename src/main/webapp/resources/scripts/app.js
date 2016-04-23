@@ -12,26 +12,37 @@ angular.module('activitiApp', [ 'ngResource', 'ui.bootstrap', "ngRoute",'angular
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/', {
+                name:'Login',
                 templateUrl: 'views/login.html',
                 controller: 'LoginCtrl'
             }) .when('/dashboard', {
+                name:'Dashboard',
                 templateUrl: 'views/dashboard.html',
                 controller: 'DashboardCtrl'
             }).when('/users', {
+                name:'Users',
                 templateUrl: 'views/users.html',
                 controller: 'UsersCtrl'
             }).when('/groups', {
+                name:'Groups',
                 templateUrl: 'views/groups.html',
                 controller: 'GroupsCtrl'
             }).when('/tasks', {
+                name:'Task List',
                 templateUrl: 'views/tasks.html',
                 controller: 'TasksCtrl'
             }).when('/processes', {
+                name:'Processes',
                 templateUrl: 'views/processes.html',
                 controller: 'ProcessesCtrl'
             }).when('/instances', {
+                name:'Instances',
                 templateUrl: 'views/instances.html',
                 controller: 'InstancesCtrl'
+            }).when('/logout', {
+                name:'Logout',
+                templateUrl: 'views/login.html',
+                controller: 'LoginCtrl'
             })
 
 //            .when('/tasks', {

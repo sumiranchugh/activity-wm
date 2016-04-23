@@ -1,6 +1,6 @@
 angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootScope, $location, ValidateUserService,
                                                                 TasksService, FormDataService, moment, $modal,
-                                                                TasksModalService, ProcessDefinitionService, GroupService) {
+                                                                TasksModalService, ProcessDefinitionService, GroupService,TasksSubmitService ) {
 
     /**
      * involved
@@ -10,6 +10,9 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
      * @type {string}
      */
     $scope.tasksType = "assignee";
+
+    $scope.isDisabled=false;
+
 
     function getTasksQuery() {
         if ($scope.tasksType == "involved") {
@@ -35,6 +38,74 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
         $scope.loadTasks();
     }
 
+
+    /**
+     * Finish tasks
+     * */
+    $scope.finish = function (detailedTask, item,success) {
+        $scope.isDisabled=true;
+        if (typeof detailedTask.propertyForSaving != "undefined") {
+
+            if(item!="undefined"){
+                detailedTask.propertyForSaving[item.id].value=success;
+            }
+
+            var objectToSave = extractDataFromForm(detailedTask);
+
+            detailedTask.properties= objectToSave.properties;
+            detailedTask.assignee=$rootScope.UserId;
+
+            var saveForm = new TasksSubmitService(detailedTask);
+            saveForm.$save({"taskId": detailedTask.id},function () {
+                emitRefresh();
+                $scope.isDisabled=false;
+               // $modalInstance.dismiss('cancel');
+            });
+            /*var saveForm = new FormDataService(objectToSave);
+             saveForm.$save(function () {
+             emitRefresh();
+             $modalInstance.dismiss('cancel');
+             });*/
+        } else {
+
+            var action = new TasksService();
+            action.action = "complete";
+            action.$save({"taskId": detailedTask.id}, function () {
+                emitRefresh();
+                $scope.isDisabled=false;
+              //  $modalInstance.dismiss('cancel');
+            });
+        }
+
+    }
+
+    function extractDataFromForm(objectOfReference) {
+        var objectToSave = {
+            "taskId": objectOfReference.id,
+            properties: []
+        }
+        for (var key in objectOfReference.propertyForSaving) {
+            var forObject = objectOfReference.propertyForSaving[key];
+
+            if (!forObject.writable) {//if this is not writeable property do not use it
+                continue;
+            }
+
+            if (forObject.value != null) {
+                var elem = {
+                    "id": forObject.id,
+                    "value": forObject.value
+                };
+                if (typeof forObject.datePattern != 'undefined') {//format
+                    var date = new Date(forObject.value);
+                    elem.value = moment(date).format(forObject.datePattern.toUpperCase());
+                }
+                objectToSave.properties.push(elem);
+            }
+        }
+
+        return objectToSave;
+    }
     /**
      * Loads the tasks
      */
@@ -44,9 +115,54 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
     }
 
     var loadTasks = function (params) {
-        $scope.tasks = TasksService.get(params);
+        var task = {};
+        $scope.tasks = TasksService.get(params, function (tasks) {
+            for (task in tasks.data) {
+                FormDataService.get({"taskId": tasks.data[task].id}, function (data) {
+                    $scope.tasks.data[task] = extractForm(tasks.data[task], data);
+                });
+                tasks.data[task].createTime=moment(new Date(tasks.data[task].createTime)).fromNow();
+            }
+
+            return tasks;
+        });
+
+        console.log($scope.tasks);
     }
 
+
+    function extractForm(task, data) {
+        var propertyForSaving = {};
+
+        for (var i = 0; i < data.formProperties.length; i++) {
+            var elem = data.formProperties[i];
+            propertyForSaving[elem.id] = {
+                "value": elem.value,
+                "id": elem.id,
+                "writable": elem.writable
+            };
+
+            if (elem.datePattern != null) {//if date
+                propertyForSaving[elem.id].opened = false; //for date picker
+                propertyForSaving[elem.id].datePattern = elem.datePattern;
+            }
+
+            if (elem.required == true && elem.type == "boolean") {
+                if (elem.value == null) {
+                    propertyForSaving[elem.id].value = false;
+                }
+            }
+
+            if (elem.type == "user") {
+                elem.enumValues = UserService.get();
+            }
+        }
+
+        task.form = data;
+        task.propertyForSaving = propertyForSaving;
+        return task;
+
+    }
 
     $scope.loadTask = function (task) {
         TasksModalService.loadTaskForm(task);
@@ -89,20 +205,24 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
         loadTasks({"size": 1000, "candidateGroup": group.id});
     }
 
-    $rootScope.validateUser.then(function(){
-            if(!$rootScope.loggedin)
+    var emitRefresh = function () {
+        $rootScope.$emit("refreshData", {});
+    }
+
+    $rootScope.validateUser.then(function () {
+            if (!$rootScope.loggedin)
                 $location.path('/login');
-           else {
+            else {
                 $scope.loadUserGroups();
                 $scope.loadTasks();
                 $scope.loadDefinitions();
             }
 
 
-        }, function(){
+        }, function () {
             console.log("in task then fail");
             $location.path('/login');
 
         }
-        );
+    );
 });
