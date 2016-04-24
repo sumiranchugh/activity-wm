@@ -22,7 +22,7 @@
       <extensionElements>
         <activiti:formProperty id="areaapproval" name="Do you Approve Request ?" type="approvereject" required="true"/>
         <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="false" writable="false"/>
-        <activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, task.eventName,0)}"/>
+        <activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, 6)}"/>
         <activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
         <modeler:allow-send-email>false</modeler:allow-send-email>
       </extensionElements>
@@ -35,7 +35,7 @@
         <activiti:formProperty id="sewasamitiapproval" name="Do you Approve Request ?" type="approvereject" required="true" />
         <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="false" writable="false"/>
         <activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
-        <!--<activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, task.eventName,1)}"/>-->
+        <!--<activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, 1)}"/>-->
         <modeler:allow-send-email>false</modeler:allow-send-email>
       </extensionElements>
     </userTask>
