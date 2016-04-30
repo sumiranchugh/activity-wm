@@ -5,19 +5,22 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateTask;
+import org.rssb.awm.common.types.NotifyRequest;
 import org.rssb.awm.entity.Approvers;
 import org.rssb.awm.entity.GetUsersResult;
-import org.rssb.awm.security.types.User;
+import org.rssb.awm.security.types.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Sumiran Chugh on 3/28/2016.
@@ -56,7 +59,7 @@ public class PreBimsListner {
     @Value("${bims.prebims.pass}")
     String bimsPass;
 
-    @Value("${bims.token}")
+    @Value("${bims.token.service}")
     String bimsTokenurl;
 
     @Value("${bims.approval.users}")
@@ -74,23 +77,30 @@ public class PreBimsListner {
     private long tokenCreationTime = 0l;
     private String bimsToken = "";
 
-
     public void notifyBims(DelegateTask task, String eventName) {
-        Map<String, String> params = new HashMap<>();
-        params.put("processInstanceId", task.getProcessInstanceId());
-        params.put("processDefinitionId", task.getProcessDefinitionId());
-     //   params.putAll(task.getVariables());
+        NotifyRequest params = new NotifyRequest();
+        params.setZonalSewadarId(task.getVariable("businessKey").toString());
+        params.setWorkflowInstanceId(task.getProcessInstanceId());
+        Object obj=null;
+        boolean approval = Boolean.valueOf((obj = task.getVariable("sewasamitiapproval")) == null ? "false" : obj.toString());
+        params.setStatus(approval==true ? "Approved" : "Not Approved");
+        params.setUpdatedBy(getLoggedInUser());
+        params.setRemarks("Task "+ params.getStatus());
+        //Add Token to header
+        String token = getValidBimsToken();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("access_token", token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        //HttpEntity<String> entity = Util.addTokenToHeader(basicauthusername, basicauthpassword);
-        /*MultiValueMap<String,String> m =new LinkedMultiValueMap<>();
-        m.put("Authorization", );
-        m.put("Accept")*/
-        HttpEntity<Map<String,String>> param = new HttpEntity<>(params,new LinkedMultiValueMap<>());
-        //restTemplate.put(notifyurl,params,params);
-        ResponseEntity<Object> response = restTemplate.exchange(notifyurl, HttpMethod.PUT, param, Object.class, params);
-       /* if (response.getStatusCode() != HttpStatus.OK) {
-            throw new ActivitiException("Error notifying bims");
-        }*/
+        HttpEntity<NotifyRequest> entity = new HttpEntity<NotifyRequest>( params,headers);
+
+        try {
+            ResponseEntity<Object> response = restTemplate.exchange(notifyurl, HttpMethod.POST, entity, Object.class);
+        }
+        catch (Exception e) {
+            throw new ActivitiException("Error notifying Bims");
+        }
+
     }
 
     public void getCandidateUsers(DelegateTask task, int level) {
@@ -115,12 +125,12 @@ public class PreBimsListner {
         HttpEntity<String> entity = new HttpEntity<String>( headers);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bimsApprovalsUsers)
-            .queryParam("areaId",area)
-            .queryParam("centerId",center)
-            .queryParam("roleId",level);
+                .queryParam("areaId",area)
+                .queryParam("centerId",center)
+                .queryParam("roleId",level);
 
-         ResponseEntity<Approvers> response = restTemplate.exchange(builder.build().encode().toUri(),
-                    HttpMethod.GET, entity, Approvers.class);
+        ResponseEntity<Approvers> response = restTemplate.exchange(builder.build().encode().toUri(),
+                HttpMethod.GET, entity, Approvers.class);
 
         if(response.getStatusCode() != HttpStatus.OK ){
             throw new ActivitiException("Error fetching user list");
@@ -128,7 +138,7 @@ public class PreBimsListner {
         else {
 
             for(GetUsersResult approver : response.getBody().getGetUsersResult()){
-                    userss.add(approver.getUserId());
+                userss.add(approver.getUserId());
             }
         }
         return userss;
@@ -144,24 +154,16 @@ public class PreBimsListner {
             ResponseEntity<String> response = restTemplate.exchange(bimsTokenurl, HttpMethod.GET, entity, String.class);
 
             String result = response.getBody();
-                return result.substring(1,result.length()-1);
+            return result.substring(1,result.length()-1);
         }
 
         else return bimsToken;
     }
 
-    public static class Users{
-
-        Map<String,Set<String>> map = new HashMap<>();
-
-        public Map<String, Set<String>> getMap() {
-            return map;
-        }
-
-        public void setMap(Map<String, Set<String>> map) {
-            this.map = map;
-        }
-    }
+private String getLoggedInUser(){
+    UserDetails usd = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return usd.getUser().getUserId();
+}
 
 
 }

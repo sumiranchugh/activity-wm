@@ -18,24 +18,24 @@
       </extensionElements>
     </startEvent>
     <userTask id="areaapproval1" name="Area Secretary Approval">
-      <documentation>Process submitted By ${initiator} for ${businessKey} , pending for approval from Area Secretary. Please refer ${attachment} for details</documentation>
+      <documentation> ${initiator}</documentation>
       <extensionElements>
         <activiti:formProperty id="areaapproval" name="Do you Approve Request ?" type="approvereject" required="true"/>
         <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="false" writable="false"/>
-        <activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, 6)}"/>
-        <activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
+<activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
+        <activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task,6)}"/>
         <modeler:allow-send-email>false</modeler:allow-send-email>
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-D4A9D776-E02B-4707-A9E9-FF4A2716A702" sourceRef="startEvent1" targetRef="areaapproval1"/>
     <exclusiveGateway id="sid-7FBE2FAC-16AB-473E-BEBF-5C432DCD4FF9"/>
     <userTask id="sid-0B17B033-53A4-4E4C-BE12-52C52C49E205" name="Sewa Samiti Approval">
-      <documentation>Request submitted by ${initiator} and approved by Area Secretary. For details refer ${attachment}.</documentation>
+      <documentation> ${initiator}</documentation>
       <extensionElements>
         <activiti:formProperty id="sewasamitiapproval" name="Do you Approve Request ?" type="approvereject" required="true" />
         <activiti:formProperty id="attachment" name="Attachment" type="attachment" variable="attachment" required="false" writable="false"/>
         <activiti:taskListener event="complete" expression="${preBimsListner.notifyBims(task, task.eventName)}"/>
-        <!--<activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, 1)}"/>-->
+        <activiti:taskListener event="create" expression="${preBimsListner.getCandidateUsers(task, 1)}"/>
         <modeler:allow-send-email>false</modeler:allow-send-email>
       </extensionElements>
     </userTask>

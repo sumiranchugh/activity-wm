@@ -64,7 +64,7 @@ public class HomeController {
 
         return "home";
     }
-    @RequestMapping(value = "/users",method = RequestMethod.POST)
+/*    @RequestMapping(value = "/users",method = RequestMethod.POST)
     @ResponseBody()
     public PreBimsListner.Users mapTest(){
         PreBimsListner.Users users = new PreBimsListner.Users();
@@ -75,6 +75,6 @@ public class HomeController {
         users.getMap().put("AREA",set );
         return users;
     }
-
+*/
 
 }
