@@ -16,7 +16,7 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
         $location.path(view);
     };
     $rootScope.any = false;
-    $rootScope.redirect = window.location.href;
+//    $rootScope.redirect = window.location.href;
     $rootScope.reset = function () {
         $rootScope.loggedUser = {};
         $scope.username = "activiti";

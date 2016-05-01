@@ -139,6 +139,7 @@ public class PreBimsListner {
 
             for(GetUsersResult approver : response.getBody().getGetUsersResult()){
                 userss.add(approver.getUserId());
+		System.out.println(approver.getUserId());
             }
         }
         return userss;

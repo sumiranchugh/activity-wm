@@ -69,10 +69,10 @@
                         <span class="glyphicon glyphicon-menu-down"></span>
                     </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>
+                            <li ng-show="any"><a ng-click="changeView('users')"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+                            <li ng-show="any"><a ng-click="changeView('groups')"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>
                         <li class="divider"></li>
-                            <li><a href="#" ng-click="changeView('logout')"><span class="glyphicon glyphicon-off"></span>Logout</a>
+                            <li ng-click="changeView('logout')><a ng-click="changeView('logout')"><span class="glyphicon glyphicon-off"></span>Logout</a>
                             </li>
                     </ul>
                 </li>
