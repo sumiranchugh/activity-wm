@@ -4,7 +4,7 @@
             <li>
                 <input name="name" type="text" placeholder="Query" class="form-control query-box" ng-model="query">
             </li>
-            <li  ng-repeat="process in processes.data">
+            <li  ng-show="any" ng-repeat="process in processes.data">
                 <div class="btn-group" dropdown>
                     <button class="btn btn-primary" ng-click="startTheProcess(process)"><span class="glyphicon glyphicon-play-circle"></span>{{process.name}} Process</button>
                 </div>
@@ -14,10 +14,10 @@
     <div class="row row action-row">
         <ul class="nav nav-tabs">
             <li class="selected" ng-class="{selected: tasksType=='assignee'}"><a ng-click="loadTasksType('assignee')">My tasks</a></li>
-            <li ng-class="{selected: tasksType=='owned'}"><a ng-click="loadTasksType('owned')">Owned</a></li>
-            <li ng-class="{selected: tasksType=='involved'}"><a
+            <li ng-show="any" ng-class="{selected: tasksType=='owned'}"><a ng-click="loadTasksType('owned')">Owned</a></li>
+            <li ng-show="any" ng-class="{selected: tasksType=='involved'}"><a
             ng-click="loadTasksType('involved')">Involved</a></li>
-            <li ng-class="{selected: tasksType=='unassigned'}"><a ng-click="loadTasksType('unassigned')">Unassigned</a>
+            <li ng-show="any" ng-class="{selected: tasksType=='unassigned'}"><a ng-click="loadTasksType('unassigned')">Unassigned</a>
         </li>
         <li ng-class="{selected: tasksType=='candidate'}"><a ng-click="loadTasksType('candidate')">Candidate User</a>
     </li>
@@ -42,7 +42,7 @@
 <table class="table">
     <thead>
         <th>Title</th>
-        <th>Started By</th>
+        <th>Started By </th>
         <th>On</th>
         <!-- <th>For</th> -->
         <th>Attachment</th>
@@ -51,7 +51,7 @@
     <tbody>
         <tr  ng-repeat="task in tasks.data | filter:query" priority="{{task.priority}}"
             ng-class="task.priority<31?'row-success':task.priority<51?'row-warning':'row-danger'">
-            <td>{{task.name}}</td>
+            <td ng-click="loadTask(task)">{{task.name}}</td>
             <td>{{task.description}}</td>
             <td>{{task.createTime}}</td>
             <td ng-repeat="item in task.form.formProperties | orderBy:'type':true">
@@ -85,7 +85,6 @@ ng-class="task.priority<31?'row-success':task.priority<51?'row-warning':'row-dan
 </div> -->
 </div>
 </div>
-<!--
 <div class="task-holder-main" style="    position: fixed;    bottom: 0px;display: none;" >
 <div class="task-holder" ng-repeat="detailedTask in detailedTasks">
 <div class="title-bar">
@@ -182,4 +181,4 @@ ng-class="task.priority<31?'row-success':task.priority<51?'row-warning':'row-dan
 </div>
 </div>
 </div>
-</div>-->
+</div>

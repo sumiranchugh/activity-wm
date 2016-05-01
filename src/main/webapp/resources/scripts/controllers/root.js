@@ -24,7 +24,7 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
         $rootScope.loggedin = false;
         $rootScope.UserId="";
         $rootScope.redirectFlag=false;
-        $rootScope.redirect="";
+        //$rootScope.redirect="";
         //    $location.path('/login');
         return ;
     };
