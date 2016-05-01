@@ -60,6 +60,9 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
                 emitRefresh();
                 $scope.isDisabled=false;
                // $modalInstance.dismiss('cancel');
+            }, function(){
+                $scope.isDisabled=false;
+                alert("Error Approving tasks. Please contact Support");
             });
             /*var saveForm = new FormDataService(objectToSave);
              saveForm.$save(function () {
@@ -114,17 +117,22 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
         loadTasks(getTasksQuery());
     }
 
-    var loadTasks = function (params) {
-        var task = {};
-        $scope.tasks = TasksService.get(params, function (tasks) {
-            for (task in tasks.data) {
-                FormDataService.get({"taskId": tasks.data[task].id}, function (data) {
-                    $scope.tasks.data[task] = extractForm(tasks.data[task], data);
-                });
-                tasks.data[task].createTime=moment(new Date(tasks.data[task].createTime)).fromNow();
-            }
+    var loadFormProperties = function(id,index) {
+        FormDataService.get({"taskId": id}, function (data) {
+            $scope.tasks.data[index] = extractForm($scope.tasks.data[index], data);
+        });
+    }
 
-            return tasks;
+    var loadTasks = function (params) {
+
+         TasksService.get(params, function (tasks) {
+
+            for (var i =0;i< tasks.data.length;i++) {
+                loadFormProperties(tasks.data[i].id,i);
+                tasks.data[i].createTime=moment(new Date(tasks.data[i].createTime)).fromNow();
+            }
+             $scope.tasks=tasks;
+
         });
 
         console.log($scope.tasks);
