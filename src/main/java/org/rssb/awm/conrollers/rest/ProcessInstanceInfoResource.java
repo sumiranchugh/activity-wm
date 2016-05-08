@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.*;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.rest.common.api.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,7 +169,7 @@ public class ProcessInstanceInfoResource {
             for (HistoricVariableInstance historicDetail : variableList) {
                 ObjectNode variableJSON = new ObjectMapper().createObjectNode();
                 variableJSON.put("variableName", historicDetail.getVariableName());
-                variableJSON.put("variableValue", historicDetail.getValue().toString());
+                variableJSON.put("variableValue", (historicDetail.getValue() == null) ? "" : historicDetail.getValue().toString());
                 variableJSON.put("variableType", historicDetail.getVariableTypeName());
                variableJSON.put("variableTaskId", historicDetail.getTaskId());
                 variableJSON.put("time", RequestUtil.dateToString(historicDetail.getTime()));
