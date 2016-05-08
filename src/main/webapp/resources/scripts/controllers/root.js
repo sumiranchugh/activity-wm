@@ -35,7 +35,8 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
                 $rootScope.reset();
                 $rootScope.redirect = response()['redirect'];
                 $rootScope.redirectFlag=true;
-              //  window.location.href = $rootScope.redirect;
+//                window.location.href = $rootScope.redirect;
+//	$location.path('/login');
             }
             else if (typeof data != 'undefined' && data != "" && typeof data.username != 'undefined') {
 
