@@ -1,5 +1,6 @@
 package org.rssb.awm;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @copyright atlas
  */
 @Configuration
+@EnableAutoConfiguration
 public class Application extends SpringBootServletInitializer {
 
 

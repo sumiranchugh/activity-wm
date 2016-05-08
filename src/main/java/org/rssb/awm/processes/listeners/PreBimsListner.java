@@ -97,7 +97,7 @@ public class PreBimsListner {
         }
         params.setStatus(approval==true ? "Approved" : "Not Approved");
         params.setUpdatedBy(getLoggedInUser());
-        params.setRemarks("Task "+ params.getStatus());
+        params.setRemarks("Task " + taskService.getProcessInstanceComments(task.getProcessInstanceId()));
         //Add Token to header
         String token = getValidBimsToken();
         HttpHeaders headers = new HttpHeaders();
