@@ -13,6 +13,7 @@ angular.module('activitiApp').controller('DashboardCtrl', function ($scope, Vali
 
 
     $scope.tasks = TasksService.get({"size": 1000, "candidateUser": $rootScope.UserId});
+    $scope.assigneeTasks = TasksService.get({"size": 1000, "assignee": $rootScope.UserId});
  //   $scope.tasks.push(TasksService.assignedTasks({"size": 1000, "assignee": $rootScope.UserId}))
 
 

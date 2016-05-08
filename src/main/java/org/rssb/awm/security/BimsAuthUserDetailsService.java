@@ -23,13 +23,10 @@ public class BimsAuthUserDetailsService implements AuthenticationUserDetailsServ
 
 
     IdentityService identityService;
-
+    boolean active = true;
     private String bimsValidateUrl;
-
     private RestTemplate restTemplate = new RestTemplate();
     private UserDetails userDetails = null;
-
-    boolean active = true;
 
 
     public BimsAuthUserDetailsService(String bimsValidateUrl, IdentityService identityService) {
@@ -59,7 +56,7 @@ public class BimsAuthUserDetailsService implements AuthenticationUserDetailsServ
                 throw new UsernameNotFoundException("Username not found in BIMS");
             response.getBody().getAdditionalProperties().put("scope", false);
             userDetails = response.getBody();
-            identityService.setAuthenticatedUserId(((org.rssb.awm.security.types.UserDetails) userDetails).getUser().getUserId());
+            identityService.setAuthenticatedUserId(String.valueOf(((org.rssb.awm.security.types.UserDetails) userDetails).getUser().getZonalSewadarId()));
 
         } else {
             if (authentication.getCredentials() instanceof UsernamePasswordAuthenticationToken) {
@@ -67,7 +64,7 @@ public class BimsAuthUserDetailsService implements AuthenticationUserDetailsServ
                 User user = identityService.createUserQuery().userId((String) credentials.getPrincipal()).singleResult();
                 if (user == null)
                     throw new BadCredentialsException("Invalid Credentials");
-                if (user.getPassword().equals((String) credentials.getCredentials())) ;
+                if (user.getPassword().equals(credentials.getCredentials())) ;
                 identityService.setAuthenticatedUserId(user.getId());
 
                 userDetails = new org.rssb.awm.security.types.UserDetails(user, true);

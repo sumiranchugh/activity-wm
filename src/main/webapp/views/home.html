@@ -115,7 +115,16 @@
     </div>
 </nav>
 
+<div class="notifications" ng-show="error.isErr">
+    <div class="notification">
+        <span class="icon-sync"></span>
 
+        <div class="meta">
+            <div class="title-notification">{{error.name}}</div>
+            <div class="description">{{error.desc}}</div>
+        </div>
+    </div>
+</div>
 <div ng-view></div>
 
 

@@ -45,17 +45,27 @@
 
         <div class="col-md-8 ">
             <div class="well well-sm">
+                <form class="form-horizontal" action="" method="post">
                 <fieldset>
                     <legend class="text-user">Dashboard</legend>
                     <div class="form-group">
-                        <label class="col-md-3 control-label" for="name">Number of tasks</label>
+                        <label class="col-md-3 control-label" for="name">Tasks assigned</label>
 
                         <div class="col-md-9">
                             <input id="name" name="name" type="text" placeholder="Number of tasks" class="form-control"
+                                   ng-model="assigneeTasks.data.length" ng-disabled="true">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="cname">Tasks available</label>
+
+                        <div class="col-md-9">
+                            <input id="cname" name="name" type="text" placeholder="Number of tasks" class="form-control"
                                    ng-model="tasks.data.length" ng-disabled="true">
                         </div>
                     </div>
                 </fieldset>
+                </form>
             </div>
         </div>
     </div>

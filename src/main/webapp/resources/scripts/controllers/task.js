@@ -36,7 +36,7 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
     $scope.loadTasksType = function (tasksType) {
         $scope.tasksType = tasksType;
         $scope.loadTasks();
-    }
+    };
 
 
     /**
@@ -62,6 +62,10 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
                // $modalInstance.dismiss('cancel');
             }, function(){
                 $scope.isDisabled=false;
+                $rootScope.error = {};
+                $rootScope.error.isErr = true;
+                $rootScope.error.name = "Connect Error";
+                $rootScope.error.desc = "Error Approving tasks. Please contact Support";
                 alert("Error Approving tasks. Please contact Support");
             });
             /*var saveForm = new FormDataService(objectToSave);
@@ -80,13 +84,13 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
             });
         }
 
-    }
+    };
 
     function extractDataFromForm(objectOfReference) {
         var objectToSave = {
             "taskId": objectOfReference.id,
             properties: []
-        }
+        };
         for (var key in objectOfReference.propertyForSaving) {
             var forObject = objectOfReference.propertyForSaving[key];
 
@@ -115,13 +119,13 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
     $scope.loadTasks = function () {
         //$scope.tasks = TasksService.get(getTasksQuery());
         loadTasks(getTasksQuery());
-    }
+    };
 
     var loadFormProperties = function(id,index) {
         FormDataService.get({"taskId": id}, function (data) {
             $scope.tasks.data[index] = extractForm($scope.tasks.data[index], data);
         });
-    }
+    };
 
     var loadTasks = function (params) {
 
@@ -136,7 +140,7 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
         });
 
         console.log($scope.tasks);
-    }
+    };
 
 
     function extractForm(task, data) {
@@ -188,7 +192,7 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
      */
     $scope.loadDefinitions = function () {
         $scope.processes = ProcessDefinitionService.get({latest: "true"});
-    }
+    };
 
     /**
      * starts the process
@@ -206,16 +210,16 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
 
     $scope.loadUserGroups = function () {
         $scope.userGroups = GroupService.get({"member": $rootScope.username});
-    }
+    };
 
     $scope.loadTasksGroups = function (group) {
         console.log(group);
         loadTasks({"size": 1000, "candidateGroup": group.id});
-    }
+    };
 
     var emitRefresh = function () {
         $rootScope.$emit("refreshData", {});
-    }
+    };
 
     $rootScope.validateUser.then(function () {
             if (!$rootScope.loggedin)
