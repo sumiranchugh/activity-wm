@@ -1,7 +1,6 @@
 package org.rssb.awm.conrollers;
 
 import org.activiti.engine.IdentityService;
-import org.rssb.awm.security.types.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +27,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null || authentication.getPrincipal().toString().equalsIgnoreCase("anonymoususer"))
             return null;
-        UserDetails usd = (UserDetails) authentication.getPrincipal();
-        return usd.getUser().getZonalSewadarId();
+        return authentication.getPrincipal();
     }
 
     /*@RequestMapping({"/views/{view}"})
