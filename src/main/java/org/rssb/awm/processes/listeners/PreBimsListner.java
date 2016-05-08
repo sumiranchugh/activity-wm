@@ -85,7 +85,7 @@ public class PreBimsListner {
     public void notifyBims(DelegateTask task, String eventName) {
         NotifyRequest params = new NotifyRequest();
         Object obj = null;
-        params.setZonalSewadarId((Integer) task.getVariable(Constants.ZONALSWID));
+        params.setZonalSewadarId(Integer.valueOf(task.getVariable(Constants.ZONALSWID).toString()));
         params.setWorkflowInstanceId(task.getProcessInstanceId());
 
         boolean approval = false;
