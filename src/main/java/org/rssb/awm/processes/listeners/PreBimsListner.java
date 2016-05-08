@@ -84,7 +84,7 @@ public class PreBimsListner {
 
     public void notifyBims(DelegateTask task, String eventName) {
         NotifyRequest params = new NotifyRequest();
-        params.setZonalSewadarId(helper.getBusinessKeyFromDelegateTask(task));
+        params.setZonalSewadarId(Integer.valueOf(helper.getBusinessKeyFromDelegateTask(task)));
         params.setWorkflowInstanceId(task.getProcessInstanceId());
         Object obj=null;
         boolean approval = false;
@@ -96,13 +96,14 @@ public class PreBimsListner {
                 return; //nothin to do if approved at area secretary level
         }
         params.setStatus(approval==true ? "Approved" : "Not Approved");
-        params.setUpdatedBy(getLoggedInUser());
+        params.setUpdatedBy(Integer.valueOf(getLoggedInUser()));
         params.setRemarks("Task " + taskService.getProcessInstanceComments(task.getProcessInstanceId()));
         //Add Token to header
         String token = getValidBimsToken();
         HttpHeaders headers = new HttpHeaders();
         headers.set("access_token", token);
         headers.setContentType(MediaType.APPLICATION_JSON);
+        System.out.println(params);
 
         HttpEntity<NotifyRequest> entity = new HttpEntity<NotifyRequest>( params,headers);
 

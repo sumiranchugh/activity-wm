@@ -25,13 +25,13 @@ public class NotifyRequest {
 
 
         @JsonProperty("ZonalSewadarId")
-        private String ZonalSewadarId;
+        private Integer ZonalSewadarId;
         @JsonProperty("WorkflowInstanceId")
         private String WorkflowInstanceId;
         @JsonProperty("Status")
         private String Status;
         @JsonProperty("UpdatedBy")
-        private String UpdatedBy;
+        private Integer UpdatedBy;
         @JsonProperty("Remarks")
         private String Remarks;
         @JsonIgnore
@@ -43,7 +43,7 @@ public class NotifyRequest {
          * The ZonalSewadarId
          */
         @JsonProperty("ZonalSewadarId")
-        public String getZonalSewadarId() {
+        public Integer getZonalSewadarId() {
             return ZonalSewadarId;
         }
 
@@ -53,7 +53,7 @@ public class NotifyRequest {
          * The ZonalSewadarId
          */
         @JsonProperty("ZonalSewadarId")
-        public void setZonalSewadarId(String ZonalSewadarId) {
+        public void setZonalSewadarId(Integer ZonalSewadarId) {
             this.ZonalSewadarId = ZonalSewadarId;
         }
 
@@ -103,7 +103,7 @@ public class NotifyRequest {
          * The UpdatedBy
          */
         @JsonProperty("UpdatedBy")
-        public String getUpdatedBy() {
+        public Integer getUpdatedBy() {
             return UpdatedBy;
         }
 
@@ -113,7 +113,7 @@ public class NotifyRequest {
          * The UpdatedBy
          */
         @JsonProperty("UpdatedBy")
-        public void setUpdatedBy(String UpdatedBy) {
+        public void setUpdatedBy(Integer UpdatedBy) {
             this.UpdatedBy = UpdatedBy;
         }
 
