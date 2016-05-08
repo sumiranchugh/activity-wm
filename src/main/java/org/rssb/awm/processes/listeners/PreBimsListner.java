@@ -5,9 +5,11 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateTask;
+import org.rssb.awm.common.Constants;
 import org.rssb.awm.common.types.NotifyRequest;
 import org.rssb.awm.entity.Approvers;
 import org.rssb.awm.entity.GetUsersResult;
+import org.rssb.awm.processes.helpers.Helper;
 import org.rssb.awm.security.types.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,6 +74,9 @@ public class PreBimsListner {
     @Autowired
     RuntimeService runtimeService;
 
+    @Autowired
+    Helper helper;
+
     RepositoryService repositoryService;
 
     private long tokenCreationTime = 0l;
@@ -79,10 +84,17 @@ public class PreBimsListner {
 
     public void notifyBims(DelegateTask task, String eventName) {
         NotifyRequest params = new NotifyRequest();
-        params.setZonalSewadarId(task.getVariable("businessKey") == null ? "" : task.getVariable("businessKey").toString());
+        params.setZonalSewadarId(helper.getBusinessKeyFromDelegateTask(task));
         params.setWorkflowInstanceId(task.getProcessInstanceId());
         Object obj=null;
-        boolean approval = Boolean.valueOf((obj = task.getVariable("sewasamitiapproval")) == null ? "false" : obj.toString());
+        boolean approval = false;
+        if ((obj = task.getVariable(Constants.SSAPPROVAL)) != null) {
+            approval = Boolean.valueOf(obj.toString());
+        } else if ((obj = task.getVariable(Constants.ASAPPROVAL)) != null) {
+            approval = Boolean.valueOf(obj.toString());
+            if (approval)
+                return; //nothin to do if approved at area secretary level
+        }
         params.setStatus(approval==true ? "Approved" : "Not Approved");
         params.setUpdatedBy(getLoggedInUser());
         params.setRemarks("Task "+ params.getStatus());

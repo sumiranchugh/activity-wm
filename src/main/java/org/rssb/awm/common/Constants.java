@@ -9,4 +9,6 @@ public class Constants {
 
     public static final String USERID_BIMS= "userid";
     public static final String ACCESS_TOKEN = "access_token";
+    public static final String SSAPPROVAL = "sewasamitiapproval";
+    public static final String ASAPPROVAL = "areaapproval";
 }
