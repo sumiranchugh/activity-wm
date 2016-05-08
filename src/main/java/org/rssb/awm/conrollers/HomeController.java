@@ -1,7 +1,7 @@
 package org.rssb.awm.conrollers;
 
 import org.activiti.engine.IdentityService;
-import org.rssb.awm.processes.listeners.PreBimsListner;
+import org.rssb.awm.security.types.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Controller
@@ -30,7 +28,8 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null || authentication.getPrincipal().toString().equalsIgnoreCase("anonymoususer"))
             return null;
-        return authentication.getPrincipal();
+        UserDetails usd = (UserDetails) authentication.getPrincipal();
+        return usd.getUser().getZonalSewadarId();
     }
 
     /*@RequestMapping({"/views/{view}"})

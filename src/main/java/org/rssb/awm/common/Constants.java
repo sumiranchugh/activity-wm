@@ -11,4 +11,5 @@ public class Constants {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String SSAPPROVAL = "sewasamitiapproval";
     public static final String ASAPPROVAL = "areaapproval";
+    public static final String ZONALSWID = "ZonalSewadarId";
 }

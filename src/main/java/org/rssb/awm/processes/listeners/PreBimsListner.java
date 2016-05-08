@@ -84,9 +84,10 @@ public class PreBimsListner {
 
     public void notifyBims(DelegateTask task, String eventName) {
         NotifyRequest params = new NotifyRequest();
-        params.setZonalSewadarId(Integer.valueOf(helper.getBusinessKeyFromDelegateTask(task)));
+        Object obj = null;
+        params.setZonalSewadarId((Integer) task.getVariable(Constants.ZONALSWID));
         params.setWorkflowInstanceId(task.getProcessInstanceId());
-        Object obj=null;
+
         boolean approval = false;
         if ((obj = task.getVariable(Constants.SSAPPROVAL)) != null) {
             approval = Boolean.valueOf(obj.toString());
@@ -96,7 +97,7 @@ public class PreBimsListner {
                 return; //nothin to do if approved at area secretary level
         }
         params.setStatus(approval==true ? "Approved" : "Not Approved");
-        params.setUpdatedBy(Integer.valueOf(getLoggedInUser()));
+        params.setUpdatedBy(getLoggedInUser());
         params.setRemarks("Task " + taskService.getProcessInstanceComments(task.getProcessInstanceId()));
         //Add Token to header
         String token = getValidBimsToken();
@@ -174,9 +175,9 @@ public class PreBimsListner {
         else return bimsToken;
     }
 
-private String getLoggedInUser(){
+    private Integer getLoggedInUser() {
     UserDetails usd = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return usd.getUser().getUserId();
+        return usd.getUser().getZonalSewadarId();
 }
 
 
