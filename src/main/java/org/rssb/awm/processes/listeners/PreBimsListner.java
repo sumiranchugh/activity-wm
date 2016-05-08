@@ -152,8 +152,8 @@ public class PreBimsListner {
         else {
 
             for(GetUsersResult approver : response.getBody().getGetUsersResult()){
-                userss.add(approver.getUserId());
-		System.out.println(approver.getUserId());
+                userss.add(String.valueOf(approver.getZonalSewadarId()));
+                System.out.println(approver.getZonalSewadarId());
             }
         }
         return userss;
