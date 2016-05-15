@@ -96,7 +96,7 @@ public class PreBimsListner {
             if (approval)
                 return; //nothin to do if approved at area secretary level
         }
-        params.setStatus(approval==true ? "Approved" : "Not Approved");
+        params.setStatus(approval == true ? "Approved" : "Rejected");
         params.setUpdatedBy(getLoggedInUser());
         params.setRemarks("Task " + taskService.getProcessInstanceComments(task.getProcessInstanceId()));
         //Add Token to header

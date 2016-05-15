@@ -14,6 +14,10 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
     $scope.isDisabled=false;
 
 
+    $scope.remItem = function ($index) {
+        $scope.comment.splice($index, 1);
+    };
+
     function getTasksQuery() {
         if ($scope.tasksType == "involved") {
             return {"size": 1000, "involvedUser": $rootScope.UserId};
@@ -43,8 +47,10 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
      * Finish tasks
      * */
     $scope.finish = function (detailedTask, item,success) {
+
+        TasksModalService.loadCommentForm(detailedTask, item, success, $scope);
         $scope.isDisabled=true;
-        if (typeof detailedTask.propertyForSaving != "undefined") {
+        /* if (typeof detailedTask.propertyForSaving != "undefined") {
 
             if(item!="undefined"){
                 detailedTask.propertyForSaving[item.id].value=success;
@@ -62,17 +68,13 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
                // $modalInstance.dismiss('cancel');
             }, function(){
                 $scope.isDisabled=false;
-                $rootScope.error = {};
-                $rootScope.error.isErr = true;
-                $rootScope.error.name = "Connect Error";
-                $rootScope.error.desc = "Error Approving tasks. Please contact Support";
                 alert("Error Approving tasks. Please contact Support");
             });
-            /*var saveForm = new FormDataService(objectToSave);
+         /!*var saveForm = new FormDataService(objectToSave);
              saveForm.$save(function () {
              emitRefresh();
              $modalInstance.dismiss('cancel');
-             });*/
+         });*!/
         } else {
 
             var action = new TasksService();
@@ -82,8 +84,8 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
                 $scope.isDisabled=false;
               //  $modalInstance.dismiss('cancel');
             });
-        }
-
+         }*/
+       
     };
 
     function extractDataFromForm(objectOfReference) {
@@ -139,7 +141,7 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
 
         });
 
-        console.log($scope.tasks);
+        //console.log($scope.tasks);
     };
 
 
@@ -238,3 +240,5 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
         }
     );
 });
+
+

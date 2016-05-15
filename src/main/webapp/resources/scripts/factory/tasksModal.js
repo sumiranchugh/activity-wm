@@ -1,6 +1,6 @@
 angular.module('activitiApp').factory('TasksModalService', function ($modal, FormDataService,TasksSubmitService, TasksService, $rootScope,UserService,ProcessInstanceService,ProcessInstancesService) {
 
-    var ModalInstanceCtrl = function ($scope, $modalInstance, moment, taskDetailed) {
+    var ModalInstanceCtrl = function ($scope, $modalInstance, moment, taskDetailed, id, success, parent) {
         $scope.taskDetailed = taskDetailed;
 
 
@@ -8,7 +8,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
             var objectToSave = {
                 "taskId": objectOfReference.id,
                 properties: []
-            }
+            };
             for (var key in objectOfReference.propertyForSaving) {
                 var forObject = objectOfReference.propertyForSaving[key];
 
@@ -39,7 +39,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                 variables: [],
                 "businessKey":"",
                 "returnVariables":true
-            }
+            };
 
             for (var key in objectOfReference.propertyForSaving) {
                 var forObject = objectOfReference.propertyForSaving[key];
@@ -65,7 +65,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                     objectToSave.variables.push(elem);
                 }
             }
-            var elem = {"name":"initiator","value":$rootScope.UserId }
+            var elem = {"name": "initiator", "value": $rootScope.UserId};
             objectToSave.variables.push(elem);
             objectToSave.returnVariables =true;
 
@@ -75,6 +75,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
         $scope.finish = function (detailedTask) {
           //  $scope.assignMe(detailedTask);
             if (typeof detailedTask.propertyForSaving != "undefined") {
+                detailedTask.propertyForSaving[id].value = success;
                 var objectToSave = extractDataFromForm(detailedTask);
 
                 taskDetailed.properties= objectToSave.properties;
@@ -83,6 +84,15 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                 var saveForm = new TasksSubmitService(taskDetailed);
                 saveForm.$save({"taskId": detailedTask.id},function () {
                     emitRefresh();
+                    $modalInstance.dismiss('cancel');
+                    parent.isDisabled = false;
+
+                }, function () {
+                    $rootScope.error = {};
+                    $rootScope.error.isErr = true;
+                    $rootScope.error.name = "Server Error";
+                    $rootScope.error.desc = "Error Processing Task, Please contact Support";
+                    parent.isDisabled = false;
                     $modalInstance.dismiss('cancel');
                 });
                 /*var saveForm = new FormDataService(objectToSave);
@@ -156,7 +166,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
 
         var emitRefresh = function () {
             $rootScope.$emit("refreshData", {});
-        }
+        };
 
         $scope.cancel = function (taskDetailed) {
             $modalInstance.dismiss('cancel');
@@ -211,7 +221,18 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
         });
     };
 
+    var loadCommentForm = function (task) {
+        /*     console.log(task);
+         FormDataService.get({"taskId": task.id}, function (data) {
+         extractForm(task, data);
+         }, function (data) {
 
+         if (data.data.statusCode == 404) {
+         alert("there was an error");
+         }
+
+         });*/
+    };
 
     var loadProcessForm = function (processDefinition) {
         FormDataService.get({"processDefinitionId": processDefinition.id}, function (data) {
@@ -245,6 +266,32 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
 
             });
             loadTaskForm(task);
+        },
+        loadCommentForm: function (task, item, success, parent) {
+            var modalInstance = $modal.open({
+                templateUrl: 'views/modals/commentForm.html',
+                controller: ModalInstanceCtrl,
+
+                resolve: {
+                    taskDetailed: function () {
+                        return task;
+                    }, id: function () {
+                        return item.id;
+                    }, success: function () {
+                        return success;
+                    },
+                    parent: function () {
+                        return parent;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (taskDetailed) {
+
+            }, function () {
+
+            });
+            loadCommentForm(task);
         },
         loadProcessForm: function (processDefinition) {
             var modalInstance = $modal.open({

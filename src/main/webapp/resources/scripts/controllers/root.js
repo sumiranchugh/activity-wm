@@ -19,14 +19,14 @@ angular.module('activitiApp').controller('RootCtrl', function ($scope, $http,Log
 //    $rootScope.redirect = window.location.href;
     $rootScope.reset = function () {
         $rootScope.loggedUser = {};
-        $scope.username = "activiti";
+        $scope.username = 1234;
         $scope.password = "activiti";
         $rootScope.loggedin = false;
         $rootScope.UserId="";
         $rootScope.redirectFlag=false;
         //$rootScope.redirect="";
         //    $location.path('/login');
-        return ;
+
     };
     $rootScope.validateUser =
         //  $location.path('/login');

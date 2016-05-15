@@ -6,3 +6,11 @@ angular.module('activitiApp').directive('aaForm', function () {
 
     };
 });
+angular.module('activitiApp').directive('aaComment', function () {
+    return {
+        restrict: 'E',
+
+        templateUrl: "views/directives/comment.html"
+
+    };
+});
