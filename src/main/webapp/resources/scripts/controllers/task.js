@@ -1,6 +1,7 @@
 angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootScope, $location, ValidateUserService,
                                                                 TasksService, FormDataService, moment, $modal,
-                                                                TasksModalService, ProcessDefinitionService, GroupService,TasksSubmitService ) {
+                                                                TasksModalService, ProcessDefinitionService,
+                                                                GroupService, TasksSubmitService, $http) {
 
     /**
      * involved
@@ -135,8 +136,20 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
 
             for (var i =0;i< tasks.data.length;i++) {
                 loadFormProperties(tasks.data[i].id,i);
+                tasks.data[i].processTitle = "";
+                tasks.data[i].users = [];
                 tasks.data[i].createTime=moment(new Date(tasks.data[i].createTime)).fromNow();
+                /*TaskCandidateUsers.query({"taskId":tasks.data[i].id}, function(users){
+                 tasks.data[i].users=users;
+                 });*/
+                setTaskTitle(tasks.data[i]);
+                setTaskUsers(tasks.data[i]);
+
+                /* TaskProcessTitle.get({"taskId":tasks.data[i].id}, function(title){
+                 tasks.data[i].processTitle=title;
+                 });*/
             }
+
              $scope.tasks=tasks;
 
         });
@@ -144,6 +157,23 @@ angular.module('activitiApp').controller("TasksCtrl", function ($scope, $rootSco
         //console.log($scope.tasks);
     };
 
+    function setTaskUsers(task) {
+        $http({method: "GET", url: "runtime/tasks/candidateUsers/" + task.id})
+            .success(function (data) {
+                // data should be text string here (only if the server response is text/plain)
+                task.users = data;
+            }
+        );
+    }
+
+    function setTaskTitle(task) {
+        $http({method: "GET", url: "runtime/tasks/processTitle/" + task.id})
+            .success(function (data) {
+                // data should be text string here (only if the server response is text/plain)
+                task.processTitle = task.processTitle + data;
+            }
+        );
+    }
 
     function extractForm(task, data) {
         var propertyForSaving = {};

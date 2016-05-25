@@ -3,6 +3,7 @@ package org.rssb.awm.security.types;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.annotation.Generated;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,8 @@ import java.util.Map;
         "UserName",
         "ZonalSewadarId"
 })
-public class User {
+
+public class User implements Serializable {
 
     @JsonProperty("AreaId")
     private int AreaId;

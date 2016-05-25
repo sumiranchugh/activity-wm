@@ -5,11 +5,11 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateTask;
-import org.rssb.awm.common.Constants;
 import org.rssb.awm.common.types.NotifyRequest;
 import org.rssb.awm.entity.Approvers;
 import org.rssb.awm.entity.GetUsersResult;
 import org.rssb.awm.processes.helpers.Helper;
+import org.rssb.awm.processes.helpers.PREBIMS;
 import org.rssb.awm.security.types.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,13 +85,13 @@ public class PreBimsListner {
     public void notifyBims(DelegateTask task, String eventName) {
         NotifyRequest params = new NotifyRequest();
         Object obj = null;
-        params.setZonalSewadarId(Integer.valueOf(task.getVariable(Constants.ZONALSWID).toString()));
+        params.setZonalSewadarId(Integer.valueOf(task.getVariable(PREBIMS.ZONALSWID).toString()));
         params.setWorkflowInstanceId(task.getProcessInstanceId());
 
         boolean approval = false;
-        if ((obj = task.getVariable(Constants.SSAPPROVAL)) != null) {
+        if ((obj = task.getVariable(PREBIMS.SSAPPROVAL)) != null) {
             approval = Boolean.valueOf(obj.toString());
-        } else if ((obj = task.getVariable(Constants.ASAPPROVAL)) != null) {
+        } else if ((obj = task.getVariable(PREBIMS.ASAPPROVAL)) != null) {
             approval = Boolean.valueOf(obj.toString());
             if (approval)
                 return; //nothin to do if approved at area secretary level
@@ -120,11 +120,18 @@ public class PreBimsListner {
     public void getCandidateUsers(DelegateTask task, int level) {
         Map<String,Object> inputMap = task.getVariables();
         if( inputMap.get("areaid") !=null  ||  inputMap.get("areaid")!=null) {
-
+            task.setName("Approval For " +
+                    inputMap.get(PREBIMS.ZONALSWNM) + "( " +
+                    inputMap.get(PREBIMS.ZONALSWID) + " )");
             String areaId = inputMap.get("areaid").toString();
             String centerId = inputMap.get("centerid").toString();
+            //String areaName =  inputMap.get(PREBIMS.AREANAME).toString();
             List<String> approvers = getApprovalIds(areaId, centerId, level);
-            task.addCandidateUsers(approvers);
+            if (approvers != null && approvers.size() > 0)
+                if (approvers.size() == 1)
+                    task.setAssignee(approvers.get(0));
+                else
+                    task.addCandidateUsers(approvers);
         }
         else throw new ActivitiException("error getting area / center data");
 

@@ -84,7 +84,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                 var saveForm = new TasksSubmitService(taskDetailed);
                 saveForm.$save({"taskId": detailedTask.id},function () {
                     emitRefresh();
-                    $modalInstance.dismiss('cancel');
+                    $modalInstance.dismiss(parent);
                     parent.isDisabled = false;
 
                 }, function () {
@@ -93,7 +93,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                     $rootScope.error.name = "Server Error";
                     $rootScope.error.desc = "Error Processing Task, Please contact Support";
                     parent.isDisabled = false;
-                    $modalInstance.dismiss('cancel');
+                    $modalInstance.dismiss(parent);
                 });
                 /*var saveForm = new FormDataService(objectToSave);
                 saveForm.$save(function () {
@@ -105,7 +105,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                 action.action = "complete";
                 action.$save({"taskId": detailedTask.id}, function () {
                     emitRefresh();
-                    $modalInstance.dismiss('cancel');
+                    $modalInstance.dismiss(parent);
                 });
             }
 
@@ -169,6 +169,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
         };
 
         $scope.cancel = function (taskDetailed) {
+            parent.isDisabled = false;
             $modalInstance.dismiss('cancel');
         };
 
@@ -271,6 +272,7 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
             var modalInstance = $modal.open({
                 templateUrl: 'views/modals/commentForm.html',
                 controller: ModalInstanceCtrl,
+                backdrop: true,
 
                 resolve: {
                     taskDetailed: function () {
@@ -286,10 +288,10 @@ angular.module('activitiApp').factory('TasksModalService', function ($modal, For
                 }
             });
 
-            modalInstance.result.then(function (taskDetailed) {
-
+            modalInstance.result.then(function (cancel) {
+                parent.isDisabled = false;
             }, function () {
-
+                parent.isDisabled = false;
             });
             loadCommentForm(task);
         },

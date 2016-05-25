@@ -56,7 +56,9 @@ public class BimsAuthUserDetailsService implements AuthenticationUserDetailsServ
                 throw new UsernameNotFoundException("Username not found in BIMS");
             response.getBody().getAdditionalProperties().put("scope", false);
             userDetails = response.getBody();
-            identityService.setAuthenticatedUserId(String.valueOf(((org.rssb.awm.security.types.UserDetails) userDetails).getUser().getZonalSewadarId()));
+            String userId = String.valueOf(((org.rssb.awm.security.types.UserDetails) userDetails).getUser().getZonalSewadarId());
+            identityService.setAuthenticatedUserId(userId);
+            identityService.setUserInfo(userId, "userName", ((org.rssb.awm.security.types.UserDetails) userDetails).getUser().getUserName());
 
         } else {
             if (authentication.getCredentials() instanceof UsernamePasswordAuthenticationToken) {

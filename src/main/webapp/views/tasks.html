@@ -41,8 +41,10 @@
 <div ng-show="tasks.data.length==0" class="text-center">No tasks here!</div>
 <table class="table">
     <thead>
+    <th>Process</th>
         <th>Title</th>
         <th>Started By </th>
+    <th>Requested For</th>
         <th>On</th>
         <!-- <th>For</th> -->
         <th>Attachment</th>
@@ -51,8 +53,14 @@
     <tbody>
         <tr  ng-repeat="task in tasks.data | filter:query" priority="{{task.priority}}"
             ng-class="task.priority<31?'row-success':task.priority<51?'row-warning':'row-danger'">
-            <td ng-click="loadTask(task)">{{task.name}}</td>
+            <td>{{task.processTitle}}</td>
+            <td>{{task.name}}</td>
             <td>{{task.description}}</td>
+            <td>
+                <ul ng-repeat="user in task.users">
+                    <li>{{user}}</li>
+                </ul>
+            </td>
             <td>{{task.createTime}}</td>
             <td ng-repeat="item in task.form.formProperties | orderBy:'type':true">
                 <div class="wrapper" ng-if="item.type=='attachment' && item.writable==false" >
@@ -60,14 +68,23 @@
                     <a  ng-href="{{ item.value}}" target="_blank" ng-model="taskDetailed.propertyForSaving[item.id].value">Open  Attachment</a>
                 </div>
                 <div class="btn-group inline"  ng-if="item.type=='approvereject'">
-                <button type="submit" class="btn btn-primary" ng-disabled="isDisabled" ng-click="finish(task,item,true)">Approve</button>
-                <button type="submit" class="btn btn-warning" ng-disabled="isDisabled" ng-click="finish(task,item,false)">Reject</button>
+                    <button type="submit" class="btn btn-primary" ng-disabled="isDisabled"
+                            ng-click="finish(task,item,true)">Approve OR Reject
+                    </button>
+
                 </div>
+                <!--<div class="btn-group inline" ng-if="item.type=='approvereject'">-->
+                <!--<button type="submit" class="btn btn-warning" ng-disabled="isDisabled"-->
+                <!--ng-click="finish(task,item,false)">Reject-->
+                <!--</button>-->
+                <!--</div>-->
             </td>
-        </div>
-    </tr>
-</tbody>
+
+        </tr>
+
+    </tbody>
 </table>
+</div>
 <!--  <div class="row user-row" ng-repeat="task in tasks.data | filter:query" ng-click="loadTask(task)"
 priority="{{task.priority}}"
 ng-class="task.priority<31?'row-success':task.priority<51?'row-warning':'row-danger'">

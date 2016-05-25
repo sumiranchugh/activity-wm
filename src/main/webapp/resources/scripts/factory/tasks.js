@@ -4,6 +4,7 @@ angular.module('activitiApp').factory('TasksService', function ($resource) {
         candidateTasks:{method: 'GET', params:{candidateUser:"@candidateUser"}},
         assignedTasks:{method: 'GET', params:{assignee:"@assignee"}},
         tasksforprocess:{method:'GET', params:{processInstanceId: "@processInstanceId"}}
+
     });
     return data;
 });
@@ -19,3 +20,12 @@ angular.module('activitiApp').factory('TasksSubmitService', function ($resource)
     return data;
 });
 
+angular.module('activitiApp').factory('TaskProcessTitle', function ($resource) {
+    var data = $resource('runtime/tasks/processTitle/:taskId', {taskId: "@taskId"});
+    return data;
+});
+
+angular.module('activitiApp').factory('TaskCandidateUsers', function ($resource) {
+    var data = $resource('runtime/tasks/candidateUsers/:taskId', {taskId: "@taskId"});
+    return data;
+});

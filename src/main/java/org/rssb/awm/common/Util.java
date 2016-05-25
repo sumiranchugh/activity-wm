@@ -1,5 +1,7 @@
 package org.rssb.awm.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,6 +13,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Map;
+
 
 
 /**
@@ -20,6 +24,7 @@ import java.util.Base64;
  */
 public class Util {
 
+    static final Logger logger = LoggerFactory.getLogger(Util.class);
 
     public static HttpEntity<String> addTokenToHeader(String username, String password) {
 
@@ -71,5 +76,24 @@ public class Util {
                 inputStream.close();
             }
         }
+    }
+
+    public static String getVariable(Map<String, Object> inputMap, String varname) {
+        return inputMap.get(varname) == null ? "" : inputMap.get(varname).toString();
+    }
+
+    public static <T> T getVariable(Map<String, Object> inputMap, String varname, Class<T> t) {
+        try {
+            T t1 = t.cast(inputMap.get(varname));
+            return t1 == null ? t.newInstance() : t1;
+        } catch (ClassCastException e) {
+            logger.error(LogMessages.ERR_FETCH_VAR_CAST, varname);
+        } catch (InstantiationException e) {
+            logger.error(LogMessages.ERR_FETCH_VAR_INST, varname);
+        } catch (IllegalAccessException e) {
+            logger.error(LogMessages.ERR_FETCH_VAR_INST, varname);
+        }
+        logger.info(LogMessages.WARN_RETURN_VAR_NULL, varname);
+        return null;
     }
 }
